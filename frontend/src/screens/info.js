@@ -64,14 +64,14 @@ export default function Info({ navigation }) {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.primaryButton}
-            onPress={() => navigation.navigate("login")}
+            onPress={() => navigation.navigate("Login")}
           >
             <Text style={styles.primaryText}>Login</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.secondaryButton}
-            onPress={() => navigation.navigate("signup")}
+            onPress={() => navigation.navigate("Signup")}
           >
             <Text style={styles.secondaryText}>New user? Sign Up</Text>
           </TouchableOpacity>

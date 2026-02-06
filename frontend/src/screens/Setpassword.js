@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { authStyles } from "../styles/authStyles";
 
-export default function SetPassword({ navigation }) {
+export default function Setpassword({ navigation }) {
   const [password, setPassword] = useState("");
 
   return (
@@ -19,7 +19,7 @@ export default function SetPassword({ navigation }) {
 
       <TouchableOpacity
         style={authStyles.button}
-        onPress={() => navigation.navigate("login")}
+        onPress={() => navigation.navigate("Login")}
       >
         <Text style={authStyles.buttonText}>Create Account</Text>
       </TouchableOpacity>

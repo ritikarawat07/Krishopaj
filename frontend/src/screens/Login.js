@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StatusBar } from "react-native";
 import { authStyles } from "../styles/authStyles";
 
-export default function login({ navigation }) {
+export default function Login({ navigation }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -45,11 +45,11 @@ export default function login({ navigation }) {
         <Text style={authStyles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("forgetpassword")}>
+      <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
         <Text style={authStyles.link}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("signup")}>
+      <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
         <Text style={authStyles.link}>New user? Sign Up</Text>
       </TouchableOpacity>
     </View>

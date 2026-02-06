@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StatusBar } from "react-native";
 import { authStyles } from "../styles/authStyles";
 
-export default function signup({ navigation }) {
+export default function Signup({ navigation }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
   const handleGetOtp = () => {
     console.log(name, phone);
-    navigation.navigate("otpverify");
+    navigation.navigate("OtpVerify");
   };
 
   return (

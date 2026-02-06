@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { authStyles } from "../styles/authStyles";
 
-export default function forgetpassword({ navigation }) {
+export default function ForgetPassword({ navigation }) {
   const [phone, setPhone] = useState("");
 
   return (
@@ -19,7 +19,7 @@ export default function forgetpassword({ navigation }) {
 
       <TouchableOpacity
         style={authStyles.button}
-        onPress={() => navigation.navigate("otpverify")}
+        onPress={() => navigation.navigate("OtpVerify")}
       >
         <Text style={authStyles.buttonText}>Reset Password</Text>
       </TouchableOpacity>
