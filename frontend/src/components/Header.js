@@ -10,7 +10,7 @@ export default function Header() {
       <Text style={styles.title}>Krishopaj</Text>
 
       <TouchableOpacity style={styles.profileButton}>
-        <Ionicons name="person-circle-outline" size={32} color="#ffffff" />
+        <Ionicons name="person-circle-outline" size={40} color="#ffffff" />
       </TouchableOpacity>
     </View>
   );
@@ -19,9 +19,9 @@ export default function Header() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#0c9485",
-    paddingTop: 50,
-    paddingBottom: 15,
-    paddingHorizontal: 20,
+    paddingTop: 36,
+    paddingBottom: 12,
+    paddingHorizontal: 24,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: "bold",
     color: "#ffffff",
     letterSpacing: 1,

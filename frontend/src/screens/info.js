@@ -4,10 +4,11 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import Header from "../components/Header";
 
-export default function Info() {
+export default function Info({ navigation }) {
   return (
     <View style={styles.container}>
       {/* Common Header */}
@@ -58,6 +59,24 @@ export default function Info() {
             • Designed specially for Indian farming needs
           </Text>
         </View>
+
+        {/* Auth buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={() => navigation.navigate("login")}
+          >
+            <Text style={styles.primaryText}>Login</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={() => navigation.navigate("signup")}
+          >
+            <Text style={styles.secondaryText}>New user? Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+
       </ScrollView>
     </View>
   );
@@ -66,11 +85,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0c9485",
+    // keep header flush with top; padding will be applied to scroll content
   },
 
   content: {
-    padding: 20,
-    paddingBottom: 30,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 40,
+  },
+
+  header: {
+    alignItems: "center",
+    marginBottom: 30,
   },
 
   card: {
@@ -78,7 +104,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 18,
     marginBottom: 16,
-    elevation: 3,
   },
 
   title: {
@@ -92,5 +117,39 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#0a0a0a",
     lineHeight: 22,
+  },
+
+  buttonContainer: {
+    marginTop: 20,
+    marginBottom: 40,
+  },
+
+  primaryButton: {
+    backgroundColor: "#ffffff",
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: "center",
+    marginBottom: 12,
+  },
+
+  primaryText: {
+    color: "#0a0a0a",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  secondaryButton: {
+    backgroundColor: "#ffffff",
+    paddingVertical: 14,
+    borderRadius: 14,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ffffff",
+  },
+
+  secondaryText: {
+    color: "#0a0a0a",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
