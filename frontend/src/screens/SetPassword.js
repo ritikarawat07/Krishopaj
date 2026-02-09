@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { authStyles } from "../styles/authStyles";
 
-export default function Setpassword({ navigation }) {
+export default function SetPassword({ navigation }) {
   const [password, setPassword] = useState("");
 
   return (
