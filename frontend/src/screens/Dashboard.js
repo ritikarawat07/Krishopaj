@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-
+import WeatherCard from '../components/WeatherCard';
 const DashboardScreen = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
@@ -38,6 +38,18 @@ const DashboardScreen = ({ navigation }) => {
           <Text style={styles.cardTitle}>Profile</Text>
           <Text style={styles.cardDescription}>Manage your account and farm info</Text>
         </TouchableOpacity>
+    
+
+      {/* WEATHER BOX */}
+      <TouchableOpacity
+        style={styles.weatherBox}
+        onPress={() => navigation.navigate('Weather')}
+      >
+        <Text style={styles.temp}>35°C</Text>
+        <Text>Partly Cloudy</Text>
+      </TouchableOpacity>
+
+  
       </View>
     </ScrollView>
   );
@@ -78,6 +90,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
   },
+  row: {
+    flexDirection: 'row',
+    marginBottom: 15
+  },
+  weatherBox: {
+    flex: 1,
+    backgroundColor: '#E8F5E9',
+    padding: 20,
+    borderRadius: 15
+  },
+  temp: {
+    fontSize: 22,
+    fontWeight: 'bold'
+  }
 });
 
 export default DashboardScreen;

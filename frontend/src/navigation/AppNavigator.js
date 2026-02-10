@@ -10,6 +10,7 @@ import OtpVerify from "../screens/OtpVerify";
 import ForgetPassword from "../screens/ForgetPassword";
 import SetPassword from "../screens/SetPassword";
 import Dashboard from "../screens/Dashboard";
+import WeatherScreen from '../screens/WeatherScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,8 @@ export default function AppNavigator() {
       <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
       <Stack.Screen name="SetPassword" component={SetPassword} />
       <Stack.Screen name="Dashboard" component= {Dashboard}/>
+      <Stack.Screen name="Weather" component={WeatherScreen} />
     </Stack.Navigator>
   );
 }
+
