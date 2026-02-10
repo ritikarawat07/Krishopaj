@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Farmer
+from .models import User, OTP
 
-admin.site.register(Farmer)
- 
+admin.site.register(User)
+admin.site.register(OTP)
