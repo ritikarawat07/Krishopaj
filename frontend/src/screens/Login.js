@@ -1,15 +1,46 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StatusBar,
+  Alert,
+} from "react-native";
 import { authStyles } from "../styles/authStyles";
+import API from "../config/api";
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 export default function Login({ navigation }) {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""); // optional (backend may ignore)
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    console.log(name, phone, password);
-    navigation.navigate("Dashboard"); // later
+  const handleLogin = async () => {
+    if (!phone || !password) {
+      Alert.alert("Error", "Phone and password are required");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await API.post(API_ENDPOINTS.LOGIN, {
+        phone: phone,
+        password: password,
+      });
+
+      if (res.data?.success) {
+        navigation.replace("Dashboard");
+      } else {
+        Alert.alert("Login Failed", res.data?.message || "Invalid credentials");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Login failed. Try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,8 +72,14 @@ export default function Login({ navigation }) {
         onChangeText={setPassword}
       />
 
-      <TouchableOpacity style={authStyles.button} onPress={handleLogin}>
-        <Text style={authStyles.buttonText}>Login</Text>
+      <TouchableOpacity
+        style={authStyles.button}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        <Text style={authStyles.buttonText}>
+          {loading ? "Logging in..." : "Login"}
+        </Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>

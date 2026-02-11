@@ -8,10 +8,6 @@ export default function Header() {
       <StatusBar backgroundColor="#0c9485" barStyle="light-content" />
 
       <Text style={styles.title}>Krishopaj</Text>
-
-      <TouchableOpacity style={styles.profileButton}>
-        <Ionicons name="person-circle-outline" size={40} color="#ffffff" />
-      </TouchableOpacity>
     </View>
   );
 }
@@ -19,9 +15,9 @@ export default function Header() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#0c9485",
-    paddingTop: 36,
-    paddingBottom: 12,
-    paddingHorizontal: 24,
+    paddingTop: 40,
+    paddingBottom: 25,
+    paddingHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -29,13 +25,9 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 22,
+    fontSize: 30,
     fontWeight: "bold",
     color: "#ffffff",
-    letterSpacing: 1,
-  },
-
-  profileButton: {
-    paddingLeft: 12,
+    letterSpacing: 2,
   },
 });

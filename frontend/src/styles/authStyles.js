@@ -11,7 +11,7 @@ export const authStyles = StyleSheet.create({
   header: {
     fontSize: 36,
     fontWeight: "bold",
-    color: "#0a0a0a",
+    color: "#f9fafb",
     textAlign: "center",
     marginBottom: 40,
   },
@@ -26,7 +26,7 @@ export const authStyles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: "#DBBF90",
+    backgroundColor: "#f9fafb",
     paddingVertical: 16,
     borderRadius: 16,
     alignItems: "center",
