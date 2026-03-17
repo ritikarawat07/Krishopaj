@@ -7,15 +7,13 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import API from "../config/api";
-import { API_ENDPOINTS } from "../config/apiConfig";
 
 const OtpVerify = ({ navigation, route }) => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // phone passed from Signup / Forgot Password
-  const { phone, from } = route.params || {};
+  // email passed from Signup / Forgot Password
+  const { email, from } = route.params || {};
 
   const handleVerifyOtp = async () => {
     if (otp.length !== 6) {
@@ -26,27 +24,12 @@ const OtpVerify = ({ navigation, route }) => {
     try {
       setLoading(true);
 
-      const res = await API.post(API_ENDPOINTS.VERIFY_OTP, {
-        phone: phone,
-        otp: otp,
-      });
-      console.log("OTP verify response:", res.data, "from:", from);
-
-      if (res.data?.success) {
-        if (from === "forgot") {
-          // Forgot password: go to SetPassword screen
-          navigation.navigate("SetPassword", { phone, from });
-        } else {
-          // Signup: go directly to Dashboard
-          navigation.replace("Dashboard");
-        }
-      } else {
-        if (res.data?.error?.includes("Invalid OTP")) {
-          Alert.alert("OTP Already Used", "This OTP has already been used. Please request a new OTP.");
-          navigation.goBack();
-        } else {
-          Alert.alert("OTP Failed", res.data?.error || "Invalid OTP");
-        }
+      if (from === "signup") {
+        // For signup: navigate to SetPassword screen with OTP
+        navigation.navigate("SetPassword", { email, from, otp });
+      } else if (from === "forgot") {
+        // For forgot password: navigate to ResetPassword screen with OTP
+        navigation.navigate("ResetPassword", { email, from, otp });
       }
     } catch (error) {
       Alert.alert("Error", "OTP verification failed");
@@ -59,7 +42,7 @@ const OtpVerify = ({ navigation, route }) => {
     <View style={styles.container}>
       <Text style={styles.title}>OTP Verification</Text>
       <Text style={styles.subtitle}>
-        Enter the 6-digit OTP sent to your registered number
+        Enter the 6-digit OTP sent to your email
       </Text>
 
       <TextInput

@@ -12,14 +12,13 @@ import API from "../config/api";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
 export default function Login({ navigation }) {
-  const [name, setName] = useState(""); // optional (backend may ignore)
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-    if (!phone || !password) {
-      Alert.alert("Error", "Phone and password are required");
+    if (!email || !password) {
+      Alert.alert("Error", "Email and password are required");
       return;
     }
 
@@ -27,7 +26,7 @@ export default function Login({ navigation }) {
       setLoading(true);
 
       const res = await API.post(API_ENDPOINTS.LOGIN, {
-        phone: phone,
+        email: email,
         password: password,
       });
 
@@ -51,17 +50,11 @@ export default function Login({ navigation }) {
 
       <TextInput
         style={authStyles.input}
-        placeholder="Full Name"
-        value={name}
-        onChangeText={setName}
-      />
-
-      <TextInput
-        style={authStyles.input}
-        placeholder="Phone Number"
-        keyboardType="phone-pad"
-        value={phone}
-        onChangeText={setPhone}
+        placeholder="Email"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        value={email}
+        onChangeText={setEmail}
       />
 
       <TextInput
@@ -82,7 +75,7 @@ export default function Login({ navigation }) {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
+      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
         <Text style={authStyles.link}>Forgot Password?</Text>
       </TouchableOpacity>
 

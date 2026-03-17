@@ -16,6 +16,22 @@ export const authStyles = StyleSheet.create({
     marginBottom: 40,
   },
 
+  subHeader: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#f9fafb",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+
+  description: {
+    fontSize: 14,
+    color: "#f9fafb",
+    textAlign: "center",
+    marginBottom: 30,
+    lineHeight: 20,
+  },
+
   input: {
     backgroundColor: "#f9fafb",
     padding: 14,

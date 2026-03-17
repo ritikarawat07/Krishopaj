@@ -12,18 +12,20 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
 
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-TWILIO_PHONE_NUMBER = os.getenv("TWILIO_PHONE_NUMBER")
-
-print("🔥 TWILIO SID FROM SETTINGS:", TWILIO_ACCOUNT_SID)
-print("🔥 TWILIO TOKEN FROM SETTINGS:", TWILIO_AUTH_TOKEN)
-print("🔥 TWILIO NUMBER FROM SETTINGS:", TWILIO_PHONE_NUMBER)
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'rawatritika0708@gmail.com'
+EMAIL_HOST_PASSWORD = 'ucnowybytbcdojqk'
+DEFAULT_FROM_EMAIL = 'rawatritika0708@gmail.com'
 
 
 
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'accounts',
     'farms',
@@ -59,12 +62,11 @@ INSTALLED_APPS = [
     'recommendations',
     'firebase_service',
 ]
-AUTH_USER_MODEL = 'accounts.User'
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -102,21 +104,18 @@ DATABASES = {
     }
 }
 
-
-
-from datetime import timedelta
-
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.FarmerUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
+         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
 
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 # MongoDB Configuration
 MONGO_URI = "mongodb://localhost:27017/"

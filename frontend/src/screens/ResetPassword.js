@@ -10,14 +10,14 @@ import { authStyles } from "../styles/authStyles";
 import API from "../config/api";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
-export default function SetPassword({ navigation, route }) {
+export default function ResetPassword({ navigation, route }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   // email, source and otp passed from OtpVerify
   const { email, from, otp } = route.params || {};
 
-  const handleSetPasswordAndVerify = async () => {
+  const handleResetPassword = async () => {
     if (!password || password.length < 6) {
       Alert.alert("Error", "Password must be at least 6 characters");
       return;
@@ -26,23 +26,23 @@ export default function SetPassword({ navigation, route }) {
     try {
       setLoading(true);
 
-      // For signup: verify OTP and set password
-      if (from === "signup") {
-        const res = await API.post(API_ENDPOINTS.VERIFY_OTP_AND_SET_PASSWORD, {
+      // For forgot password: verify OTP and reset password
+      if (from === "forgot") {
+        const res = await API.post(API_ENDPOINTS.RESET_PASSWORD, {
           email: email,
           password: password,
           otp: otp,
         });
 
         if (res.data?.success) {
-          Alert.alert("Success", "Account verified successfully!");
+          Alert.alert("Success", "Password reset successfully!");
           navigation.replace("Login");
         } else {
-          Alert.alert("Error", res.data?.error || "Failed to verify account");
+          Alert.alert("Error", res.data?.error || "Failed to reset password");
         }
       }
     } catch (error) {
-      console.log("Set password error:", error.response?.data || error.message);
+      console.log("Reset password error:", error.response?.data || error.message);
       Alert.alert("Error", error.response?.data?.error || "Something went wrong");
     } finally {
       setLoading(false);
@@ -53,9 +53,15 @@ export default function SetPassword({ navigation, route }) {
     <View style={authStyles.container}>
       <Text style={authStyles.header}>Krishopaj</Text>
 
+      <Text style={authStyles.subHeader}>Reset Password</Text>
+      
+      <Text style={authStyles.description}>
+        Enter your new password below.
+      </Text>
+
       <TextInput
         style={authStyles.input}
-        placeholder="Set Password"
+        placeholder="New Password"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
@@ -63,12 +69,16 @@ export default function SetPassword({ navigation, route }) {
 
       <TouchableOpacity
         style={authStyles.button}
-        onPress={handleSetPasswordAndLogin}
+        onPress={handleResetPassword}
         disabled={loading}
       >
         <Text style={authStyles.buttonText}>
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Resetting..." : "Reset Password"}
         </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <Text style={authStyles.link}>Back to Login</Text>
       </TouchableOpacity>
     </View>
   );

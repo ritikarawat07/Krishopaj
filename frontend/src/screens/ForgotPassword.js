@@ -11,33 +11,33 @@ import { authStyles } from "../styles/authStyles";
 import API from "../config/api";
 import { API_ENDPOINTS } from "../config/apiConfig";
 
-export default function Signup({ navigation }) {
-  const [name, setName] = useState("");
+export default function ForgotPassword({ navigation }) {
   const [email, setEmail] = useState("");
-  const [age, setAge] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleGetOtp = async () => {
-    if (!name || !email || !age) {
-      Alert.alert("Error", "Please enter name, email and age");
+  const handleSendOtp = async () => {
+    if (!email) {
+      Alert.alert("Error", "Please enter your email");
       return;
     }
 
     try {
       setLoading(true);
 
-      const res = await API.post(API_ENDPOINTS.REGISTER, {
-        name: name,
+      const res = await API.post(API_ENDPOINTS.FORGOT_PASSWORD, {
         email: email,
-        age: parseInt(age),
       });
 
-      navigation.navigate("OtpVerify", {
-        email: email,
-        from: "signup",
-      });
+      if (res.data?.success) {
+        navigation.navigate("OtpVerify", {
+          email: email,
+          from: "forgot",
+        });
+      } else {
+        Alert.alert("Error", res.data?.error || "Failed to send OTP");
+      }
     } catch (error) {
-      console.log("Signup error:", error.response?.data || error.message);
+      console.log("Forgot password error:", error.response?.data || error.message);
       Alert.alert("Error", error.response?.data?.error || "Failed to send OTP");
     } finally {
       setLoading(false);
@@ -50,12 +50,11 @@ export default function Signup({ navigation }) {
 
       <Text style={authStyles.header}>Krishopaj</Text>
 
-      <TextInput
-        style={authStyles.input}
-        placeholder="Full Name"
-        value={name}
-        onChangeText={setName}
-      />
+      <Text style={authStyles.subHeader}>Forgot Password</Text>
+      
+      <Text style={authStyles.description}>
+        Enter your email address and we'll send you an OTP to reset your password.
+      </Text>
 
       <TextInput
         style={authStyles.input}
@@ -66,22 +65,18 @@ export default function Signup({ navigation }) {
         onChangeText={setEmail}
       />
 
-      <TextInput
-        style={authStyles.input}
-        placeholder="Age"
-        keyboardType="numeric"
-        value={age}
-        onChangeText={setAge}
-      />
-
       <TouchableOpacity
         style={authStyles.button}
-        onPress={handleGetOtp}
+        onPress={handleSendOtp}
         disabled={loading}
       >
         <Text style={authStyles.buttonText}>
-          {loading ? "Sending OTP..." : "Get OTP"}
+          {loading ? "Sending OTP..." : "Send OTP"}
         </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+        <Text style={authStyles.link}>Back to Login</Text>
       </TouchableOpacity>
     </View>
   );

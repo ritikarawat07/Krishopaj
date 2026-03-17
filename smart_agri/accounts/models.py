@@ -1,89 +1,58 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
 from datetime import timedelta
 
 
-# =========================
-# USER MANAGER
-# =========================
-class UserManager(BaseUserManager):
+class FarmerUserManager(BaseUserManager):
+    def create_user(self, email, name, age, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Email is required')
 
-    def create_user(self, phone, password=None, **extra_fields):
-        if not phone:
-            raise ValueError("Phone number required")
-
-        extra_fields.setdefault("is_active", True)
-
-        user = self.model(phone=phone, **extra_fields)
-
-        if password:
-            user.set_password(password)
-        else:
-            user.set_unusable_password()
-
+        email = self.normalize_email(email)
+        user = self.model(email=email, name=name, age=age, **extra_fields)
+        user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, phone, password=None, **extra_fields):
-        extra_fields.setdefault("is_staff", True)
-        extra_fields.setdefault("is_superuser", True)
-        extra_fields.setdefault("is_active", True)
+    def create_superuser(self, email, name, age, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
 
-        if extra_fields.get("is_staff") is not True:
-            raise ValueError("Superuser must have is_staff=True.")
-
-        if extra_fields.get("is_superuser") is not True:
-            raise ValueError("Superuser must have is_superuser=True.")
-
-        return self.create_user(phone, password, **extra_fields)
+        return self.create_user(email, name, age, password, **extra_fields)
 
 
-# =========================
-# USER MODEL
-# =========================
-class User(AbstractBaseUser):
+class FarmerUser(AbstractUser):
+    username = None
+    email = models.EmailField(unique=True)
     name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=15, unique=True)
+    age = models.PositiveIntegerField()
+    is_email_verified = models.BooleanField(default=False)
 
-    is_verified = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name', 'age']
 
-    USERNAME_FIELD = "phone"
-    REQUIRED_FIELDS = ["name"]
-
-    objects = UserManager()
+    objects = FarmerUserManager()
 
     def __str__(self):
-        return self.phone
-
-    def has_perm(self, perm, obj=None):
-        return self.is_superuser
-
-    def has_module_perms(self, app_label):
-        return self.is_superuser or self.is_staff
+        return self.email
 
 
-# =========================
-# OTP MODEL
-# =========================
-class OTP(models.Model):
-    phone = models.CharField(max_length=15)
+class EmailOTP(models.Model):
+    PURPOSE_CHOICES = (
+        ('signup', 'Signup'),
+        ('forgot_password', 'Forgot Password'),
+    )
+
+    email = models.EmailField()
     otp = models.CharField(max_length=6)
+    purpose = models.CharField(max_length=20, choices=PURPOSE_CHOICES)
+    is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ['phone', 'otp']
-
-    def save(self, *args, **kwargs):
-        print(f"🔍 DEBUG: Saving OTP to database: {self.phone} - {self.otp}")
-        super().save(*args, **kwargs)
-        print(f"🔍 DEBUG: OTP saved with ID: {self.id}")
 
     def is_expired(self):
         return timezone.now() > self.created_at + timedelta(minutes=5)
 
     def __str__(self):
-        return f"{self.phone} - {self.otp}"
+        return f"{self.email} - {self.purpose}"
