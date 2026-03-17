@@ -24,6 +24,7 @@ class SetPasswordSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, min_length=6)
     name = serializers.CharField(max_length=100)
     age = serializers.IntegerField(min_value=1)
+    otp = serializers.CharField(max_length=6, required=False)
 
 
 class LoginSerializer(serializers.Serializer):

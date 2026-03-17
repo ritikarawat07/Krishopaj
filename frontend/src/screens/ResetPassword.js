@@ -30,8 +30,7 @@ export default function ResetPassword({ navigation, route }) {
       if (from === "forgot") {
         const res = await API.post(API_ENDPOINTS.RESET_PASSWORD, {
           email: email,
-          password: password,
-          otp: otp,
+          new_password: password,
         });
 
         if (res.data?.success) {

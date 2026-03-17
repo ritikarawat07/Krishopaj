@@ -67,6 +67,7 @@ class VerifyOTPView(APIView):
             }, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class SetPasswordAfterSignupView(APIView):
     def post(self, request):
         serializer = SetPasswordSerializer(data=request.data)
@@ -75,15 +76,41 @@ class SetPasswordAfterSignupView(APIView):
             password = serializer.validated_data['password']
             name = serializer.validated_data['name']
             age = serializer.validated_data['age']
+            otp = serializer.validated_data.get('otp')  # Get OTP from request
 
             try:
+                # First try to find a verified OTP
                 otp_obj = EmailOTP.objects.filter(
                     email=email,
                     purpose='signup',
                     is_verified=True
                 ).latest('created_at')
+                print(f"Found verified OTP: {otp_obj.otp}")
             except EmailOTP.DoesNotExist:
-                return Response({"error": "Email not verified by OTP."}, status=status.HTTP_400_BAD_REQUEST)
+                # If no verified OTP, try to verify the provided OTP
+                if not otp:
+                    print(f"No verified OTP found and no OTP provided for {email}")
+                    return Response({"error": "Email not verified by OTP."}, status=status.HTTP_400_BAD_REQUEST)
+                
+                try:
+                    otp_obj = EmailOTP.objects.filter(
+                        email=email,
+                        purpose='signup'
+                    ).latest('created_at')
+                    
+                    if otp_obj.is_expired():
+                        return Response({"error": "OTP expired."}, status=status.HTTP_400_BAD_REQUEST)
+                    
+                    if otp_obj.otp != otp:
+                        return Response({"error": "Invalid OTP."}, status=status.HTTP_400_BAD_REQUEST)
+                    
+                    # Mark as verified
+                    otp_obj.is_verified = True
+                    otp_obj.save()
+                    print(f"OTP {otp} verified and marked as verified")
+                    
+                except EmailOTP.DoesNotExist:
+                    return Response({"error": "OTP not found."}, status=status.HTTP_404_NOT_FOUND)
 
             if FarmerUser.objects.filter(email=email).exists():
                 return Response({"error": "User already exists."}, status=status.HTTP_400_BAD_REQUEST)
@@ -113,6 +140,7 @@ class SetPasswordAfterSignupView(APIView):
             }, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)

@@ -24,7 +24,7 @@ export default function ForgotPassword({ navigation }) {
     try {
       setLoading(true);
 
-      const res = await API.post(API_ENDPOINTS.FORGOT_PASSWORD, {
+      const res = await API.post(API_ENDPOINTS.FORGOT_PASSWORD_REQUEST_OTP, {
         email: email,
       });
 

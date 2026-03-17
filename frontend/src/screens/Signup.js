@@ -26,7 +26,7 @@ export default function Signup({ navigation }) {
     try {
       setLoading(true);
 
-      const res = await API.post(API_ENDPOINTS.REGISTER, {
+      const res = await API.post(API_ENDPOINTS.SIGNUP_REQUEST_OTP, {
         name: name,
         email: email,
         age: parseInt(age),
@@ -35,9 +35,14 @@ export default function Signup({ navigation }) {
       navigation.navigate("OtpVerify", {
         email: email,
         from: "signup",
+        name: name,
+        age: parseInt(age),
       });
     } catch (error) {
       console.log("Signup error:", error.response?.data || error.message);
+      console.log("Full error:", error);
+      console.log("Request URL:", API_ENDPOINTS.SIGNUP_REQUEST_OTP);
+      console.log("API Base URL:", "http://192.168.1.8:8000/api");
       Alert.alert("Error", error.response?.data?.error || "Failed to send OTP");
     } finally {
       setLoading(false);

@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import API from "../config/api";
+import { API_ENDPOINTS } from "../config/apiConfig";
 
 const OtpVerify = ({ navigation, route }) => {
   const [otp, setOtp] = useState("");
@@ -24,15 +26,30 @@ const OtpVerify = ({ navigation, route }) => {
     try {
       setLoading(true);
 
-      if (from === "signup") {
-        // For signup: navigate to SetPassword screen with OTP
-        navigation.navigate("SetPassword", { email, from, otp });
-      } else if (from === "forgot") {
-        // For forgot password: navigate to ResetPassword screen with OTP
-        navigation.navigate("ResetPassword", { email, from, otp });
+      const res = await API.post(API_ENDPOINTS.VERIFY_OTP, {
+        email: email,
+        otp: otp,
+        purpose: from === "signup" ? "signup" : "forgot_password",
+      });
+
+      if (res.data?.message) {
+        if (from === "signup") {
+          // For signup: navigate to SetPassword screen with OTP
+          navigation.navigate("SetPassword", { 
+            email, 
+            from, 
+            otp,
+            name: route.params?.name,
+            age: route.params?.age
+          });
+        } else if (from === "forgot") {
+          // For forgot password: navigate to ResetPassword screen with OTP
+          navigation.navigate("ResetPassword", { email, from, otp });
+        }
       }
     } catch (error) {
-      Alert.alert("Error", "OTP verification failed");
+      console.log("OTP verification error:", error.response?.data || error.message);
+      Alert.alert("Error", error.response?.data?.error || "OTP verification failed");
     } finally {
       setLoading(false);
     }

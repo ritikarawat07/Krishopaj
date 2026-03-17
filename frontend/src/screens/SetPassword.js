@@ -28,15 +28,17 @@ export default function SetPassword({ navigation, route }) {
 
       // For signup: verify OTP and set password
       if (from === "signup") {
-        const res = await API.post(API_ENDPOINTS.VERIFY_OTP_AND_SET_PASSWORD, {
+        const res = await API.post(API_ENDPOINTS.SET_PASSWORD, {
           email: email,
           password: password,
-          otp: otp,
+          name: route.params?.name || "",
+          age: route.params?.age || 0,
+          otp: otp, // Pass the OTP directly
         });
 
         if (res.data?.success) {
-          Alert.alert("Success", "Account verified successfully!");
-          navigation.replace("Login");
+          Alert.alert("Success", "Account created successfully!");
+          navigation.replace("Dashboard");
         } else {
           Alert.alert("Error", res.data?.error || "Failed to verify account");
         }
@@ -63,11 +65,11 @@ export default function SetPassword({ navigation, route }) {
 
       <TouchableOpacity
         style={authStyles.button}
-        onPress={handleSetPasswordAndLogin}
+        onPress={handleSetPasswordAndVerify}
         disabled={loading}
       >
         <Text style={authStyles.buttonText}>
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Creating Account..." : "Create Account"}
         </Text>
       </TouchableOpacity>
     </View>
