@@ -13,10 +13,16 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load .env file
 load_dotenv(BASE_DIR / ".env")
+
+# SECURITY
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-3w##cen7%*hphp6!(de!n^cu36yud23#7=+swskh4_9)sodv5&')
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
+
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -29,20 +35,11 @@ DEFAULT_FROM_EMAIL = 'rawatritika0708@gmail.com'
 
 
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-3w##cen7%*hphp6!(de!n^cu36yud23#7=+swskh4_9)sodv5&'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -117,11 +114,6 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
-# MongoDB Configuration
-MONGO_URI = "mongodb://localhost:27017/"
-MONGO_DB_NAME = "smart_agri"
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

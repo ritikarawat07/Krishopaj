@@ -1,5 +1,7 @@
 # Python
 *.pyc
+*.pyo
+*.pyd
 __pycache__/
 *.py[cod]
 *$py.class
@@ -27,18 +29,39 @@ env/
 ENV/
 .venv
 
+# Testing and coverage
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.pytest_cache
+.hypothesis
+.tox/
+
 # Django
 *.log
 local_settings.py
+settings_local.py
 db.sqlite3
 db.sqlite3-journal
+*.db
 /static/
 /media/
+/collected_static/
 *.pot
+debug_toolbar/
+celerybeat-schedule
+celerybeat.pid
+django_session_*
 
 # Environment variables
 .env
 .env.local
+.env.development
+.env.test
+.env.production
 
 # Firebase
 firebase_admin_config.json
@@ -79,7 +102,6 @@ logs/
 
 # Database
 *.sql~
-*.sqlite
 
 # OS
 Thumbs.db
