@@ -34,13 +34,6 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'rawatritika0708@gmail.com')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'ucnowybytbcdojqk')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 
-# Debug: Print email settings (remove in production)
-print(f"Email Backend: {EMAIL_BACKEND}")
-print(f"Email Host: {EMAIL_HOST}")
-print(f"Email User: {EMAIL_HOST_USER}")
-print(f"Email Password: {'*' * len(EMAIL_HOST_PASSWORD) if EMAIL_HOST_PASSWORD else 'None'}")
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 
@@ -64,6 +57,7 @@ INSTALLED_APPS = [
     'datasets',
     'recommendations',
     'firebase_service',
+    'yield_prediction'
 ]
 
 MIDDLEWARE = [

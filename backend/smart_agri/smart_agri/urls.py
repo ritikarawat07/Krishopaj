@@ -16,4 +16,6 @@ urlpatterns = [
     path('', api_info, name='api-info'),
     path('admin/', admin.site.urls),
     path('api/accounts/', include('accounts.urls')),
+    path('api/yield/', include('yield_prediction.urls')),
+
 ]
