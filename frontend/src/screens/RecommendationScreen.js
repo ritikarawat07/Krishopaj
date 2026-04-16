@@ -11,6 +11,7 @@ import {
   PermissionsAndroid,
   Platform,
 } from "react-native";
+import * as SecureStore from 'expo-secure-store';
 
 import {
   generateLiveData,
@@ -18,7 +19,7 @@ import {
   getRecommendation,
 } from "../services/fakeApi";
 
-const RecommendationScreen = () => {
+const RecommendationScreen = ({ navigation }) => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
@@ -160,6 +161,50 @@ const RecommendationScreen = () => {
       Alert.alert('Error', 'Failed to fetch location. Please enter manually.');
     } finally {
       setLocationLoading(false);
+    }
+  };
+
+  // Add to Farm function
+  const handleAddToFarm = async () => {
+    // Create new farm object
+    const newFarm = {
+      id: Date.now(), // Use timestamp as unique ID
+      name: `${yieldData.crop} Farm`,
+      crop: yieldData.crop,
+      area: `${yieldData.area} Acre`,
+      location: `${yieldData.state}, ${yieldData.district}`,
+      predictedYield: yieldPrediction.totalYield,
+      yieldPerAcre: yieldPrediction.yieldPerAcre
+    };
+
+    try {
+      // Get existing farms from SecureStore
+      const existingFarmsJson = await SecureStore.getItemAsync('userFarms');
+      let existingFarms = existingFarmsJson ? JSON.parse(existingFarmsJson) : [];
+      
+      // Add new farm to the array
+      const updatedFarms = [...existingFarms, newFarm];
+      
+      // Save updated farms array to SecureStore
+      await SecureStore.setItemAsync('userFarms', JSON.stringify(updatedFarms));
+      
+      Alert.alert(
+        'Farm Added Successfully!',
+        `${newFarm.name} has been added to your farms.\n\nLocation: ${newFarm.location}\nArea: ${newFarm.area}\nPredicted Yield: ${newFarm.predictedYield} tons`,
+        [
+          {
+            text: 'View My Farms',
+            onPress: () => navigation.navigate('Dashboard', { refreshFarms: true })
+          },
+          {
+            text: 'Add Another',
+            style: 'cancel'
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Error saving farm:', error);
+      Alert.alert('Error', 'Failed to add farm. Please try again.');
     }
   };
 
@@ -400,6 +445,12 @@ const RecommendationScreen = () => {
                 {yieldPrediction.yieldPerAcre} × {yieldData.area} acres = {yieldPrediction.totalYield} tons
               </Text>
             </View>
+            <TouchableOpacity 
+              style={styles.addToFarmButton}
+              onPress={handleAddToFarm}
+            >
+              <Text style={styles.addToFarmButtonText}>Add to My Farms</Text>
+            </TouchableOpacity>
           </View>
         )}
       </View>
@@ -794,5 +845,30 @@ const styles = StyleSheet.create({
     color: '#A5D6A7',
     fontSize: 14,
     fontWeight: '600',
+  },
+
+  // Add to Farm Button Styles
+  addToFarmButton: {
+    backgroundColor: '#ff2c2c',
+    paddingVertical: 14,
+    borderRadius: 2,
+    alignItems: 'center',
+    marginTop: 20,
+
+    shadowColor: '#2ECC71',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+
+  addToFarmButtonText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+  },
+
+  yieldCalculationContainer: {
+    marginTop: 15,
+    alignItems: 'center',
   },
 });

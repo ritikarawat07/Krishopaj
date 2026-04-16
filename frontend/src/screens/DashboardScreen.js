@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,24 +7,60 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import HealCrop from '../components/HealCrop';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getTips } from '../services/geminiService';
+import AlertService from '../services/alertService';
 
 const features = [
   { title: 'Yield Optimization', icon: '🌾' },
   { title: 'Irrigation Tips', icon: '💧' },
   { title: 'Fertilizer Tips', icon: '🧪' },
   { title: 'Pest Alerts', icon: '🐛' },
+  { title: 'Mandi Prices', icon: '💰' },
 ];
 
 const DashboardScreen = ({ navigation, route }) => {
   const [name] = useState(route?.params?.name || 'User');
 
+  // State for farms - initially empty, only user-created farms
+  const [farms, setFarms] = useState([]);
+
+  // Initialize services on component mount
+  useEffect(() => {
+    loadFarms();
+    AlertService.initialize();
+  }, []);
+
+  // Check if we need to refresh farms (after adding new farm)
+  useEffect(() => {
+    if (route?.params?.refreshFarms) {
+      loadFarms();
+      navigation.setParams({ refreshFarms: undefined });
+    }
+  }, [route?.params?.refreshFarms, navigation]);
+
+  // Load farms from SecureStore
+  const loadFarms = async () => {
+    try {
+      const farmsJson = await SecureStore.getItemAsync('userFarms');
+      const savedFarms = farmsJson ? JSON.parse(farmsJson) : [];
+      setFarms(savedFarms);
+    } catch (error) {
+      console.error('Error loading farms:', error);
+    }
+  };
+
   const handlePress = async (type) => {
+    if (type === 'Mandi Prices') {
+      navigation.navigate('MandiPrice');
+      return;
+    }
+    
     try {
       const result = await getTips(type);
       navigation.navigate('Yield', { tips: result, title: type });
@@ -37,30 +73,21 @@ const DashboardScreen = ({ navigation, route }) => {
     }
   };
 
-  // Farms Data
-  const farms = [
-    {
-      id: 1,
-      name: "Green Field",
-      crop: "Wheat",
-      area: "5 Acre",
-      location: "Haryana"
-    },
-    {
-      id: 2,
-      name: "Sunrise Farm",
-      crop: "Rice",
-      area: "3 Acre",
-      location: "Punjab"
-    },
-    {
-      id: 3,
-      name: "River Side",
-      crop: "Corn",
-      area: "4 Acre",
-      location: "UP"
+  // Delete farm function
+  const handleDeleteFarm = async (farmId) => {
+    try {
+      // Remove from state
+      setFarms(prevFarms => prevFarms.filter(farm => farm.id !== farmId));
+      
+      // Remove from SecureStore
+      const farmsJson = await SecureStore.getItemAsync('userFarms');
+      const savedFarms = farmsJson ? JSON.parse(farmsJson) : [];
+      const updatedFarms = savedFarms.filter(farm => farm.id !== farmId);
+      await SecureStore.setItemAsync('userFarms', JSON.stringify(updatedFarms));
+    } catch (error) {
+      console.error('Error deleting farm:', error);
     }
-  ];
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -90,7 +117,10 @@ const DashboardScreen = ({ navigation, route }) => {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.title}>My Farms</Text>
-              <TouchableOpacity style={styles.addBtn}>
+              <TouchableOpacity 
+                style={styles.addBtn}
+                onPress={() => navigation.navigate('Recommendation')}
+              >
                 <Text style={{ color: '#fff' }}>+ Add</Text>
               </TouchableOpacity>
             </View>
@@ -100,12 +130,30 @@ const DashboardScreen = ({ navigation, route }) => {
               showsHorizontalScrollIndicator={false}
             >
               {farms.map((farm) => (
-                <View key={farm.id} style={styles.farmCard}>
-                  <Text style={styles.farmName}>{farm.name}</Text>
+                <TouchableOpacity 
+                  key={farm.id} 
+                  style={styles.farmCard}
+                  onPress={() => navigation.navigate('FarmInfo', { farm })}
+                >
+                  <View style={styles.farmHeader}>
+                    <Text style={styles.farmName}>{farm.name}</Text>
+                    <TouchableOpacity 
+                      style={styles.deleteButton}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        handleDeleteFarm(farm.id);
+                      }}
+                    >
+                      <Text style={styles.deleteButtonText}>×</Text>
+                    </TouchableOpacity>
+                  </View>
                   <Text>🌾 Crop: {farm.crop}</Text>
                   <Text>📏 Area: {farm.area}</Text>
                   <Text>📍 Location: {farm.location}</Text>
-                </View>
+                  {farm.predictedYield && (
+                    <Text style={styles.yieldText}>📊 Yield: {farm.predictedYield} tons</Text>
+                  )}
+                </TouchableOpacity>
               ))}
             </ScrollView>
           </View>
@@ -245,6 +293,34 @@ const styles = StyleSheet.create({
 
   text: {
     textAlign: 'center',
+    fontWeight: 'bold',
+  },
+
+  yieldText: {
+    color: '#2e7d32',
+    fontWeight: '600',
+    marginTop: 5,
+  },
+
+  farmHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+
+  deleteButton: {
+    backgroundColor: '#ef5350',
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  deleteButtonText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
   },
 });

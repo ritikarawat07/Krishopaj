@@ -6,8 +6,8 @@ const Footer = ({ navigation, activeTab }) => {
   const tabs = [
     { name: 'Home', screen: 'Dashboard', icon: '🏠' },
     { name: 'Yield', screen: 'Recommendation', icon: '📊' }, 
-    { name: 'Mandi', screen: 'Mandi', icon: '🛒' },
-    { name: 'Sensors', screen: 'Sensors', icon: '📡' },
+    { name: 'Mandi', screen: 'MandiPrice', icon: '🛒' },
+    { name: 'Sensors', screen: 'SensorData', icon: '📡' },
     { name: 'Chat', screen: 'Chatbot', icon: '💬' },
   ];
 

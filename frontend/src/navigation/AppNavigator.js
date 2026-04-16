@@ -11,9 +11,11 @@ import SignupScreen from '../screens/SignupScreen';
 import OTPScreen from '../screens/OTPScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import ChatbotScreen from '../screens/ChatbotScreen';
-import MandiScreen from '../screens/MandiScreen';
 import YieldScreen from '../screens/YieldScreen';
 import RecommendationScreen from "../screens/RecommendationScreen";
+import FarmInfoScreen from "../screens/FarmInfoScreen";
+import SensorDataScreen from "../screens/SensorDataScreen";
+import MandiPriceScreen from "../screens/MandiPriceScreen";
 
 const Stack = createStackNavigator();
 
@@ -40,10 +42,12 @@ function AppNavigator() {
         <Stack.Screen name="SetPassword" component={SetPasswordScreen} />
         <Stack.Screen name="Forgot" component={ForgotPasswordScreen} />
         <Stack.Screen name="Dashboard" component={DashboardScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Mandi" component={MandiScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Chatbot" component={ChatbotScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Chatbot" component={ChatbotScreen}/>
         <Stack.Screen name="Yield" component={YieldScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Recommendation" component={RecommendationScreen}/>
+        <Stack.Screen name="FarmInfo" component={FarmInfoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="SensorData" component={SensorDataScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MandiPrice" component={MandiPriceScreen} options={{ headerShown: false }} />
 
       </Stack.Navigator>
     </NavigationContainer>
