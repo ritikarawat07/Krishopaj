@@ -21,7 +21,6 @@ const features = [
   { title: 'Irrigation Tips', icon: '💧' },
   { title: 'Fertilizer Tips', icon: '🧪' },
   { title: 'Pest Alerts', icon: '🐛' },
-  { title: 'Mandi Prices', icon: '💰' },
 ];
 
 const DashboardScreen = ({ navigation, route }) => {
@@ -56,11 +55,6 @@ const DashboardScreen = ({ navigation, route }) => {
   };
 
   const handlePress = async (type) => {
-    if (type === 'Mandi Prices') {
-      navigation.navigate('MandiPrice');
-      return;
-    }
-    
     try {
       const result = await getTips(type);
       navigation.navigate('Yield', { tips: result, title: type });

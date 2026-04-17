@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
 # 1. Load dataset
-df = pd.read_csv("Crop_recommendation.csv")   # change file name
+df = pd.read_csv("Crop_recommendation.csv")
 
 # 2. Clean columns
 df.columns = df.columns.str.strip()
